@@ -62,15 +62,32 @@
         
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/materialize.min.js"></script>
-         <?php 
-            $url = file_get_contents('http://hometeste.dlinkddns.com');
-            $result = preg_replace("/\<p\>(.*?)\<\/p\>/i", "\\1", $url);
-        ?>
+        
         <div id="storage" style="display:none;">
-        <?php
-            echo "$result";            
-        ?>
+            <?php
+            //Função retirada do forum "https://forum.imasters.com.br/topic/221364-erro-com-funcao-file_get_contents/" do usuário Daniel_Ribeiro
+                function my_file_get_contents( $site_url ){
+                    $ch = curl_init();
+                    $timeout = 10;
+                    curl_setopt ($ch, CURLOPT_URL, $site_url);
+                    curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+                    $file_contents = curl_exec($ch);
+                    curl_close($ch);
+                    return $file_contents;
+                    
+                }
+            
+                //O problema estava no "file_get_contents" que pois, provavelmente o servidor desativou o acesso a arquivos atraves de url.
+                //Foi substituido então pelo "my_file_get_contents" utilizando a função acima.
+                $url = my_file_get_contents('http://hometeste.dlinkddns.com');
+                $result = preg_replace("/\<p\>(.*?)\<\/p\>/i", "\\1", $url);
+                
+                echo "$result";
+            ?>
         </div>
+        
+        
         <script>
             var dados = document.getElementById("storage").innerHTML.trim().split("*");
             console.log(dados);
